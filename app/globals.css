@@ -1,0 +1,47 @@
+:root {
+  --bg: #f4ede3;
+  --panel: rgba(255, 252, 247, 0.84);
+  --panel-strong: #fffdf9;
+  --text: #241b14;
+  --muted: #75685b;
+  --line: rgba(72, 51, 33, 0.14);
+  --accent: #ba5d2d;
+  --accent-strong: #87411f;
+  --danger: #b42318;
+  --shadow: 0 22px 60px rgba(66, 43, 20, 0.12);
+  --radius: 22px;
+  --font-body:
+    "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "Georgia", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(186, 93, 45, 0.16), transparent 28%),
+    radial-gradient(circle at 90% 10%, rgba(120, 150, 120, 0.15), transparent 24%),
+    linear-gradient(180deg, #faf5ed 0%, #f2e7d7 100%);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+}
