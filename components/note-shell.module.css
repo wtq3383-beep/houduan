@@ -58,6 +58,31 @@
   gap: 16px;
 }
 
+.modeTabs {
+  display: inline-flex;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(24, 19, 14, 0.06);
+}
+
+.tab,
+.tabActive {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--muted);
+}
+
+.tabActive {
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 2px 10px rgba(24, 19, 14, 0.08);
+}
+
 .sidebarHeader,
 .editorHeader,
 .toolbarActions,
@@ -239,7 +264,8 @@
 }
 
 .titleInput,
-.editorArea {
+.editorArea,
+.previewArea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 18px;
@@ -262,10 +288,102 @@
   font-size: 16px;
 }
 
+.previewArea {
+  min-height: 380px;
+  overflow: auto;
+}
+
 .titleInput:focus,
 .editorArea:focus {
   border-color: rgba(191, 91, 43, 0.6);
   box-shadow: 0 0 0 4px rgba(191, 91, 43, 0.12);
+}
+
+.previewEmpty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.markdown {
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  margin-top: 1.4em;
+  margin-bottom: 0.6em;
+  line-height: 1.2;
+}
+
+.markdown h1:first-child,
+.markdown h2:first-child,
+.markdown h3:first-child,
+.markdown h4:first-child,
+.markdown p:first-child {
+  margin-top: 0;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown blockquote,
+.markdown pre,
+.markdown table {
+  margin: 0 0 1em;
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 1.4em;
+}
+
+.markdown blockquote {
+  margin-left: 0;
+  padding-left: 1em;
+  border-left: 3px solid rgba(191, 91, 43, 0.35);
+  color: var(--muted);
+}
+
+.markdown code {
+  padding: 0.15em 0.4em;
+  border-radius: 8px;
+  background: rgba(24, 19, 14, 0.08);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.92em;
+}
+
+.markdown pre {
+  overflow: auto;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(24, 19, 14, 0.92);
+  color: #f7efe5;
+}
+
+.markdown pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.markdown th,
+.markdown td {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+}
+
+.markdown img {
+  max-width: 100%;
+  border-radius: 14px;
 }
 
 .footerBar {

@@ -1,6 +1,8 @@
 "use client";
 
 import { type ChangeEvent, useEffect, useState, useTransition } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./note-shell.module.css";
 
 type Note = {
@@ -18,6 +20,8 @@ type SavePayload = {
   imageUrls: string[];
 };
 
+type EditorMode = "edit" | "preview";
+
 export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
   const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [selectedId, setSelectedId] = useState<string | null>(initialNotes[0]?.id ?? null);
@@ -25,6 +29,7 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
   const [content, setContent] = useState(initialNotes[0]?.content ?? "");
   const [imageUrls, setImageUrls] = useState<string[]>(initialNotes[0]?.imageUrls ?? []);
   const [status, setStatus] = useState(initialNotes[0] ? "已打开首篇笔记" : "准备新建笔记");
+  const [editorMode, setEditorMode] = useState<EditorMode>("edit");
   const [isSaving, startSaving] = useTransition();
   const [isUploading, startUploading] = useTransition();
 
@@ -112,6 +117,7 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
     setTitle("");
     setContent("");
     setImageUrls([]);
+    setEditorMode("edit");
     setStatus("正在编辑新笔记");
   }
 
@@ -143,13 +149,13 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
     });
   }
 
-  const selectedNote = notes.find((note) => note.id === selectedId) ?? null;
-  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
-
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/login";
   }
+
+  const selectedNote = notes.find((note) => note.id === selectedId) ?? null;
+  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
   return (
     <main className={styles.page}>
@@ -157,7 +163,7 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
         <div>
           <p className={styles.eyebrow}>Vercel Notes</p>
           <h1>个人笔记</h1>
-          <p className={styles.subtitle}>记录想法、整理图片，随时保存到云端。</p>
+          <p className={styles.subtitle}>支持 Markdown 编辑、图片上传和云端保存。</p>
         </div>
         <div className={styles.topbarActions}>
           <button type="button" className={styles.primaryButton} onClick={createDraft}>
@@ -187,7 +193,10 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
                   key={note.id}
                   type="button"
                   className={isActive ? styles.noteCardActive : styles.noteCard}
-                  onClick={() => setSelectedId(note.id)}
+                  onClick={() => {
+                    setSelectedId(note.id);
+                    setEditorMode("edit");
+                  }}
                 >
                   <div className={styles.noteCardTop}>
                     <strong>{note.title || "未命名笔记"}</strong>
@@ -245,16 +254,45 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
             placeholder="输入标题"
           />
 
-          <textarea
-            className={styles.editorArea}
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-            placeholder="记录想法、会议要点、待办事项或灵感碎片。"
-          />
+          <div className={styles.modeTabs}>
+            <button
+              type="button"
+              className={editorMode === "edit" ? styles.tabActive : styles.tab}
+              onClick={() => setEditorMode("edit")}
+            >
+              编辑
+            </button>
+            <button
+              type="button"
+              className={editorMode === "preview" ? styles.tabActive : styles.tab}
+              onClick={() => setEditorMode("preview")}
+            >
+              预览
+            </button>
+          </div>
+
+          {editorMode === "edit" ? (
+            <textarea
+              className={styles.editorArea}
+              value={content}
+              onChange={(event) => setContent(event.target.value)}
+              placeholder={"用 Markdown 记录内容，例如：\n# 标题\n- 列表\n**重点**\n> 引用"}
+            />
+          ) : (
+            <div className={styles.previewArea}>
+              {content.trim() ? (
+                <article className={styles.markdown}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                </article>
+              ) : (
+                <p className={styles.previewEmpty}>还没有内容，先切回编辑模式写点东西。</p>
+              )}
+            </div>
+          )}
 
           <div className={styles.footerBar}>
             <span>{status}</span>
-            <span>{selectedNote ? "正在编辑已有笔记" : "当前为新建草稿"}</span>
+            <span>{editorMode === "edit" ? "当前为 Markdown 编辑模式" : "当前为 Markdown 预览模式"}</span>
           </div>
         </section>
 
@@ -278,7 +316,7 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
             ) : (
               <div className={styles.galleryEmpty}>
                 <strong>还没有图片</strong>
-                <p>在编辑器里上传图片后，会显示在这里，方便快速浏览。</p>
+                <p>上传的图片会保存在 Vercel Blob，并显示在这里方便回看。</p>
               </div>
             )}
           </div>
