@@ -1,32 +1,27 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getBasicAuthSecret } from "@/lib/auth";
+import { getSessionCookieName, isValidSessionToken } from "@/lib/auth";
+
+const PUBLIC_PATHS = ["/login", "/api/auth/login"];
 
 export function middleware(request: NextRequest) {
-  const secret = getBasicAuthSecret();
+  const { pathname } = request.nextUrl;
 
-  if (!secret) {
+  if (
+    PUBLIC_PATHS.includes(pathname) ||
+    pathname.startsWith("/_next/") ||
+    pathname === "/favicon.ico"
+  ) {
     return NextResponse.next();
   }
 
-  const header = request.headers.get("authorization");
+  const token = request.cookies.get(getSessionCookieName())?.value;
 
-  if (header) {
-    const [scheme, encoded] = header.split(" ");
-    if (scheme === "Basic" && encoded) {
-      const decoded = atob(encoded);
-      if (decoded === secret) {
-        return NextResponse.next();
-      }
-    }
+  if (isValidSessionToken(token)) {
+    return NextResponse.next();
   }
 
-  return new NextResponse("Authentication required.", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="My Notes"'
-    }
-  });
+  return NextResponse.redirect(new URL("/login", request.url));
 }
 
 export const config = {

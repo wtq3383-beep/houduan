@@ -19,6 +19,12 @@
   backdrop-filter: blur(18px);
 }
 
+.topbarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr) 320px;
@@ -107,6 +113,7 @@
 }
 
 .primaryButton,
+.ghostButton,
 .dangerButton,
 .uploadButton {
   border: 0;
@@ -118,6 +125,11 @@
     transform 0.15s ease,
     box-shadow 0.15s ease,
     background 0.15s ease;
+}
+
+.ghostButton {
+  background: rgba(24, 19, 14, 0.08);
+  color: var(--text);
 }
 
 .primaryButton {
@@ -137,12 +149,14 @@
 }
 
 .primaryButton:hover,
+.ghostButton:hover,
 .dangerButton:hover,
 .uploadButton:hover {
   transform: translateY(-1px);
 }
 
 .primaryButton:disabled,
+.ghostButton:disabled,
 .dangerButton:disabled,
 .uploadButton:disabled {
   opacity: 0.6;

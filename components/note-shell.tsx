@@ -146,6 +146,11 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
   const selectedNote = notes.find((note) => note.id === selectedId) ?? null;
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/login";
+  }
+
   return (
     <main className={styles.page}>
       <header className={styles.topbar}>
@@ -154,9 +159,14 @@ export function NoteShell({ initialNotes }: { initialNotes: Note[] }) {
           <h1>个人笔记</h1>
           <p className={styles.subtitle}>记录想法、整理图片，随时保存到云端。</p>
         </div>
-        <button type="button" className={styles.primaryButton} onClick={createDraft}>
-          新建笔记
-        </button>
+        <div className={styles.topbarActions}>
+          <button type="button" className={styles.primaryButton} onClick={createDraft}>
+            新建笔记
+          </button>
+          <button type="button" className={styles.ghostButton} onClick={logout}>
+            退出登录
+          </button>
+        </div>
       </header>
 
       <div className={styles.workspace}>

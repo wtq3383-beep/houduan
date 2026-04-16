@@ -5,7 +5,7 @@
 - 前端和接口全部部署到 Vercel
 - 图片存储使用 Vercel Blob
 - 笔记结构化数据使用 Vercel Marketplace 接入的 Postgres
-- 通过 Basic Auth 做最基础的私有访问
+- 通过站内登录和 Cookie 会话做单用户访问控制
 
 ## 环境变量
 
@@ -13,8 +13,9 @@
 
 - `DATABASE_URL`
 - `BLOB_READ_WRITE_TOKEN`
-- `BASIC_AUTH_USER`
-- `BASIC_AUTH_PASS`
+- `LOGIN_USERNAME`
+- `LOGIN_PASSWORD`
+- `SESSION_SECRET`
 
 ## 本地开发
 
